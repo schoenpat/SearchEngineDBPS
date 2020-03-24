@@ -19,17 +19,18 @@
   <!-- NAVI -->
   <nav class="light-blue lighten-1" role="navigation">
     <div class="nav-wrapper container">
-      <a href="" id="logo-container" class="brand-logo"><i class="material-icons">search</i> DHBW Search-Engine</a>
+      <a href="index.html" id="logo-container" class="brand-logo"><i class="material-icons">search</i> DHBW Search-Engine</a>
 
-
+      <!--
       <ul class="right hide-on-med-and-down">
-        <li><a href="./add-site.html">Add Pages to Crawler</a></li>
+        <li><a href="./add-site.php">Add Pages to Crawler</a></li>
       </ul>
+      -->
 
       <ul id="nav-mobile" class="sidenav">
-        <li><a href="./add-site.html">Add Pages to Crawler</a></li>
+        <li><a href="./index.html">Startpage</a></li>
       </ul>
-      <a href="" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
     </div>
   </nav>
 
@@ -38,7 +39,7 @@
   <div class="section no-pad-bot" id="index-banner">
     <div class="container">
       <br><br>
-      <h1 class="header center orange-text">DHWB Search-Engine</h1>
+      <h1 class="header center orange-text">Add a site to the webcrawler</h1>
       <!--
       <div class="row center">
         <h5 class="header col s12 light">A modern responsive front-end framework based on Material Design</h5>
@@ -48,11 +49,15 @@
       <br><br>
 
       <!-- method = get? => argument is visible in URL -->
-      <form action="result.php" method="get">
+      <form action="../WebCrawler/add_url.php" method="get">
         <div class="row center">
-          <p> <input type="text" name="search" placeholder="Enter a searchphrase ..." /></p>
+          <p>Add URL to Database: (<b>HINT:</b> USE 'http' or 'https' like, <b>http://www.xyz.de</b>)</p>
+          <br>
+          <p> <input type="text" name="url" placeholder="Enter a valid URL ..." /></p>
+
+
           <p><button type="submit" id="download-button" class="btn-large waves-effect waves-light orange">
-              <i class="material-icons left">search</i> Search
+              <i class="material-icons left">add</i> Add URL
             </button></p>
         </div>
       </form>
