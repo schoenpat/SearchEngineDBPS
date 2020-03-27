@@ -11,20 +11,11 @@
 --
 
 CREATE TABLE IF NOT EXISTS `tbl_link` (
-  `id` int(11) NOT NULL,
-  `link` varchar(1024) NOT NULL,
-  `timestamp_visited` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=321 DEFAULT CHARSET=utf8;
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `tbl_link`
---
-ALTER TABLE `tbl_link`
-  ADD PRIMARY KEY (`id`);
+    id                int auto_increment
+        primary key,
+    link              varchar(1024)                         not null,
+    timestamp_visited timestamp default current_timestamp() not null on update current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
   
 -- --------------------------------------------------------
@@ -34,42 +25,36 @@ ALTER TABLE `tbl_link`
 --
 
 CREATE TABLE IF NOT EXISTS `word` (
-  `id` int(11) NOT NULL,
-  `word` varchar(1024) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=1617 DEFAULT CHARSET=utf8;
+  id   int auto_increment
+      primary key,
+  word varchar(64) not null,
+  constraint word
+      unique (word),
+  constraint word_unique_idx
+      unique (word)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `word`
---
-ALTER TABLE `word`
-  ADD PRIMARY KEY (`id`);
-
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `wordlinks`
 --
 
 CREATE TABLE IF NOT EXISTS `wordlinks` (
-  `id` int(11) NOT NULL,
-  `id_word` int(11) NOT NULL,
-  `id_link` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=7657 DEFAULT CHARSET=utf8;
-
---
--- Indexes for dumped tables
---
+   id      int auto_increment
+       primary key,
+   id_word int not null,
+   id_link int not null,
+   constraint word_only_once_per_website
+       unique (id_word, id_link),
+   constraint wordlinks_ibfk_1
+       foreign key (id_link) references tbl_link (id),
+   constraint wordlinks_ibfk_2
+       foreign key (id_word) references word (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Indexes for table `wordlinks`
 --
-ALTER TABLE `wordlinks`
-  ADD PRIMARY KEY (`id`);
+create index id_link
+    on wordlinks (id_link);
 
-  
--- EOF
