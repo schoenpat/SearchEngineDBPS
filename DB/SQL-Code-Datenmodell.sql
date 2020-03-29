@@ -14,7 +14,9 @@ CREATE TABLE IF NOT EXISTS `tbl_link` (
     id                int auto_increment
         primary key,
     link              varchar(1024)                         not null,
-    timestamp_visited timestamp default current_timestamp() not null on update current_timestamp()
+    timestamp_visited timestamp default current_timestamp() not null on update current_timestamp(),
+    constraint tbl_link
+        unique (link) using hash
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
   
