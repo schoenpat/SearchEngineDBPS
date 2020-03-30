@@ -29,6 +29,10 @@ class DBHandler
     private $GET_URLS_TO_INDEX;
     private $INSERT_URL;
     private $GET_URL;
+    /**
+     * @var bool|PDOStatement
+     */
+    private $GET_SEARCH_RESULT;
 
     public function __construct()
     {
@@ -44,13 +48,8 @@ class DBHandler
 
 
         // ...perform an SQL query for searching the word in the database. It may be found only once...
-        $this->GET_MATCHING_WORDS  = $this->db->prepare("SELECT * FROM word WHERE word LIKE '%?%' LIMIT ?;"); // LIMITED NUMBER OF RESULTS
-        // query the links being connected to the word entry...
-        $this->GET_WORD_LINKS = $this->db->prepare("SELECT * FROM wordlinks WHERE id_word = ?  LIMIT ?;"); // LIMITED NUMBER OF RESULTS
-        $this->GET_LINK = $this->db->prepare("SELECT * FROM tbl_link WHERE id = ?;");
-
         $this->GET_SEARCH_RESULT = $this->db->prepare("
-                                                SELECT tbl_link.link from tbl_link
+                                                SELECT distinct tbl_link.link from tbl_link
                                                 join wordlinks wl on tbl_link.id = wl.id_link
                                                 join word w2 on wl.id_word = w2.id
                                                 where w2.word like :needle;");
@@ -74,35 +73,6 @@ class DBHandler
         $this->ADD_WORD_TO_URL->bindParam(1, $word_id);
         $this->ADD_WORD_TO_URL->bindParam(2, $url);
         $this->ADD_WORD_TO_URL->execute();
-    }
-
-    public function get_word($word)
-    {
-        $this->GET_WORD->execute([$word]);
-        return $this->GET_WORD->fetchAll();
-    }
-
-    public function get_matching_words($searchphrase)
-    {
-        $this->ADD_WORD_TO_URL->bindParam(1, $searchphrase);
-        $this->ADD_WORD_TO_URL->bindParam(2, $cfg_limit_found_words);
-        $this->GET_MATCHING_WORDS->execute();
-        return $this->GET_MATCHING_WORDS->fetchAll();
-    }
-
-    public function get_word_links($word_id)
-    {
-        $this->ADD_WORD_TO_URL->bindParam(1, $word_id);
-        $this->ADD_WORD_TO_URL->bindParam(2, $cfg_limit_found_links_per_words);
-        $this->GET_MATCHING_WORDS->execute();
-        return $this->GET_MATCHING_WORDS->fetchAll();
-    }
-
-    public function get_link($link_id)
-    {
-        $this->GET_LINK->bindParam(1, $link_id);
-        $this->GET_LINK->execute();
-        return $this->GET_LINK->fetchAll();
     }
 
 
