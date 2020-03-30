@@ -55,10 +55,10 @@
   <div class="section no-pad-bot" id="index-banner">
     <div class="container">
       <br><br>
-      <h1 class="header center orange-text">Results</h1>
-      <br><br>
+
 
       <div class="row center">
+      <br>
 
 
         <?php
@@ -69,53 +69,37 @@
           // Only if there is a search phrase...
           if ($search != "") {
 
-            // Open the ul list and loop the word entries...
-            echo "<ul>\n";
+            echo '<h1 class="header center orange-text">Result(s) for search phrase "<b>'.$search.'</b>"</h5>';
+
             $record_counter = 0;
 
-            foreach ($db->get_matching_words($search) as $word_item) {
-
-                      //echo "<li><a href='" . $_SERVER['SCRIPT_NAME'] . "?aid=" . $user['id'] . "'>\n";
-                      echo "<li> Result(s) for search phrase [" . $word_item['word'] . "]:\n"; //  (id: " . $word_item['id'] . ")\n";
-                      
-
-                      // Finally we query the links being connected to the word entry...                      
-
-                      $word_links = $db->get_word_links($word_item['id']);
-
-
-                      // Open the next level ul list and loop the wordlink entries ...
-                      echo "<ul>\n";
-
-                      foreach($word_links as $wordlink_item) {
-                            echo "<li>\n";
-                          // Trace: echo "Wordlink found. The id_link is " . $wordlink_item["id_link"] . "</br>\n";
-                          
-                          // Finally we need the real link...
-
-
-                          //$sql = "SELECT * FROM tbl_link WHERE id = '".$wordlink_item["id_link"]."';";
-
-                          $link = $db->get_link(wordlink_item["id_link"]);
-
-
-                          // We have found the link. So lets display it...
-                          $a_link = $link['link'];
-                          $record_counter++;
-                          echo "$record_counter - <a href='" . $a_link . "'>" . $a_link . "</a>\n";
-                          
-                          echo "</li>\n";
-                      }
-
-
-                      echo "</ul>\n";
-                      
-                      // echo $user['firstname'] . ' ' . $user['lastname'];
-                      echo "</li>\n";
-
-            }
-            echo "</ul>\n";
+            // For debugging only
+            //print_r($db->get_search_result($search));
+            
+            foreach ($db->get_search_result($search) as $result) {
               
+              echo "<ul>\n";
+
+              echo "<h6><li>\n";
+                  
+              // Finally we need the real link...
+              $link = $result["link"];
+
+              // We have found the link. So lets display it...
+              $record_counter++;
+              echo "$record_counter.) <a href='" . $link . "'>" . $link . "</a>\n";
+              
+              echo "</li></h6>\n";
+
+
+              echo "</ul>\n";
+
+    }
+
+
+            if ($record_counter == 0) {
+              echo "</br><h5>No results for search phrase '<b>" . $search . "</b>' found!</h5>";
+            }
 
           } else {
               echo "Oops, nothing found. => Enter a search phrase!</br>\n";

@@ -18,7 +18,6 @@ if (isset($argv))
     parse_str(implode('&', array_slice($argv, 1)), $_GET);
 }
 
-
 // This is a mapper class to hold the SQL-Statements and does the DB and PDO stuff.
 class DBHandler
 {
@@ -49,6 +48,12 @@ class DBHandler
         // query the links being connected to the word entry...
         $this->GET_WORD_LINKS = $this->db->prepare("SELECT * FROM wordlinks WHERE id_word = ?  LIMIT ?;"); // LIMITED NUMBER OF RESULTS
         $this->GET_LINK = $this->db->prepare("SELECT * FROM tbl_link WHERE id = ?;");
+
+        $this->GET_SEARCH_RESULT = $this->db->prepare("
+                                                SELECT tbl_link.link from tbl_link
+                                                join wordlinks wl on tbl_link.id = wl.id_link
+                                                join word w2 on wl.id_word = w2.id
+                                                where w2.word like :needle;");
     }
 
     public function update_url_timestamp($link)
@@ -100,6 +105,13 @@ class DBHandler
         return $this->GET_LINK->fetchAll();
     }
 
+
+    public function get_search_result($searchphrase)
+    {
+        $this->GET_SEARCH_RESULT->execute(array(':needle' => '%'.$searchphrase.'%'));
+        return $this->GET_SEARCH_RESULT->fetchAll();
+    }
+  
     public function get_urls_to_index()
     {
         $this->GET_URLS_TO_INDEX->execute();
@@ -116,6 +128,7 @@ class DBHandler
     public function insert_url($url)
     {
         $this->INSERT_URL->bindParam(1, $url);
+        echo("URL was inserted into db!");
         return $this->INSERT_URL->execute();
     }
 }
