@@ -50,12 +50,14 @@
       <br><br>
 
       <!-- method = get? => argument is visible in URL -->
-      <form action="../WebCrawler/add_url.php" method="get">
+      <form action="../WebCrawler/worker.php" method="get">
+        <!-- mode=add -->
+        <input type="hidden" name="mode" value="add" />
+
         <div class="row center">
           <p>Add URL to Database: (<b>HINT:</b> USE 'http' or 'https' like, <b>http://www.xyz.de</b>)</p>
           <br>
           <p> <input type="text" name="url" placeholder="Enter a valid URL ..." /></p>
-
 
           <p><button type="submit" id="download-button" class="btn-large waves-effect waves-light orange">
               <i class="material-icons left">add</i> Add URL
