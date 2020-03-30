@@ -13,7 +13,10 @@ $cfg_limit_found_words = 100;
 $cfg_limit_found_links_per_words = 100;
 
 // Functions
-parse_str(implode('&', array_slice($argv, 1)), $_GET);
+if (isset($argv))
+{
+    parse_str(implode('&', array_slice($argv, 1)), $_GET);
+}
 //echo("CRAWLER\n");
 echo  $_GET['url'];
 echo  $_GET['mode'];
