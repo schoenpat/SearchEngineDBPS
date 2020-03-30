@@ -128,7 +128,6 @@ class DBHandler
     public function insert_url($url)
     {
         $this->INSERT_URL->bindParam(1, $url);
-        echo("URL was inserted into db!");
         return $this->INSERT_URL->execute();
     }
 }
