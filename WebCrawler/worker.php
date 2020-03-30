@@ -49,6 +49,12 @@ class DBHandler
         // query the links being connected to the word entry...
         $this->GET_WORD_LINKS = $this->db->prepare("SELECT * FROM wordlinks WHERE id_word = ?  LIMIT ?;"); // LIMITED NUMBER OF RESULTS
         $this->GET_LINK = $this->db->prepare("SELECT * FROM tbl_link WHERE id = ?;");
+        
+        $this->GET_SEARCH_RESULT = $this->db->prepare("
+                                                SELECT tbl_link.link from tbl_link
+                                                join wordlinks wl on tbl_link.id = wl.id_link
+                                                join word w2 on wl.id_word = w2.id
+                                                where w2.word like :needle;");
     }
 
     public function update_url_timestamp($link)
@@ -98,6 +104,12 @@ class DBHandler
         $this->GET_LINK->bindParam(1, $link_id);
         $this->GET_LINK->execute();
         return $this->GET_LINK->fetchAll();
+    }
+
+    public function get_search_result($searchphrase)
+    {
+        $this->GET_SEARCH_RESULT->execute(array(':needle' => '%'.$searchphrase.'%'));
+        return $this->GET_SEARCH_RESULT->fetchAll();
     }
 
     public function get_urls_to_index()
