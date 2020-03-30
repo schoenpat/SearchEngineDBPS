@@ -55,8 +55,7 @@
   <div class="section no-pad-bot" id="index-banner">
     <div class="container">
       <br><br>
-      <h1 class="header center orange-text">Results</h1>
-      <br><br>
+
 
       <div class="row center">
       <br>
@@ -70,6 +69,8 @@
           // Only if there is a search phrase...
           if ($search != "") {
 
+            echo '<h1 class="header center orange-text">Result(s) for search phrase "<b>'.$search.'</b>"</h5>';
+
 
             $record_counter = 0;
 
@@ -79,8 +80,6 @@
             foreach ($db->get_search_result($search) as $result) {
 
               //print_r($result);
-
-              echo "<h5>Result(s) for search phrase '<b>" . $search . "</b>':</h5>"; //  (id: " . $word_item['id'] . ")\n";
               
               echo "<ul>\n";
 
