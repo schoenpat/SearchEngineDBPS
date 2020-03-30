@@ -9,10 +9,12 @@ $cfg_no_links_per_markup = 20; // Number of links to be considered per markup pa
 global $cfg_no_terms_per_website;
 $cfg_no_terms_per_website = 100; // Words are a little bit expensive to insert, so limit these for development
 $cfg_recursion_depth = 2; // Depth of the recursion of the crawler
+$cfg_limit_found_words = 100;
+$cfg_limit_found_links_per_words = 100;
 
 // Functions
 parse_str(implode('&', array_slice($argv, 1)), $_GET);
-echo("CRAWLER\n");
+//echo("CRAWLER\n");
 echo  $_GET['url'];
 echo  $_GET['mode'];
 
@@ -40,6 +42,13 @@ class DBHandler
         $this->GET_URLS_TO_INDEX = $this->db->prepare("SELECT id, link FROM tbl_link WHERE timestamp_visited <= NOW() - INTERVAL 1 DAY;");
         $this->INSERT_URL = $this->db->prepare("INSERT INTO tbl_link (link, timestamp_visited) VALUES (?, NOW());");
         $this->GET_URL = $this->db->prepare("SELECT id FROM tbl_link WHERE link=?;");
+
+
+        // ...perform an SQL query for searching the word in the database. It may be found only once...
+        $this->GET_MATCHING_WORDS  = $this->db->prepare("SELECT * FROM word WHERE word LIKE '%?%' LIMIT ?;"); // LIMITED NUMBER OF RESULTS
+        // query the links being connected to the word entry...
+        $this->GET_WORD_LINKS = $this->db->prepare("SELECT * FROM wordlinks WHERE id_word = ?  LIMIT ?;"); // LIMITED NUMBER OF RESULTS
+        $this->GET_LINK = $this->db->prepare("SELECT * FROM tbl_link WHERE id = ?;");
     }
 
     public function update_url_timestamp($link)
@@ -68,6 +77,29 @@ class DBHandler
         return $this->GET_WORD->fetchAll();
     }
 
+    public function get_matching_words($searchphrase)
+    {
+        $this->ADD_WORD_TO_URL->bindParam(1, $searchphrase);
+        $this->ADD_WORD_TO_URL->bindParam(2, $cfg_limit_found_words);
+        $this->GET_MATCHING_WORDS->execute();
+        return $this->GET_MATCHING_WORDS->fetchAll();
+    }
+
+    public function get_word_links($word_id)
+    {
+        $this->ADD_WORD_TO_URL->bindParam(1, $word_id);
+        $this->ADD_WORD_TO_URL->bindParam(2, $cfg_limit_found_links_per_words);
+        $this->GET_MATCHING_WORDS->execute();
+        return $this->GET_MATCHING_WORDS->fetchAll();
+    }
+
+    public function get_link($link_id)
+    {
+        $this->GET_LINK->bindParam(1, $link_id);
+        $this->GET_LINK->execute();
+        return $this->GET_LINK->fetchAll();
+    }
+
     public function get_urls_to_index()
     {
         $this->GET_URLS_TO_INDEX->execute();
@@ -84,6 +116,7 @@ class DBHandler
     public function insert_url($url)
     {
         $this->INSERT_URL->bindParam(1, $url);
+        echo("URL was inserted into db!");
         return $this->INSERT_URL->execute();
     }
 }
