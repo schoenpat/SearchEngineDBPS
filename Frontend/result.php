@@ -71,15 +71,12 @@
 
             echo '<h1 class="header center orange-text">Result(s) for search phrase "<b>'.$search.'</b>"</h5>';
 
-
             $record_counter = 0;
 
             // For debugging only
             //print_r($db->get_search_result($search));
             
             foreach ($db->get_search_result($search) as $result) {
-
-              //print_r($result);
               
               echo "<ul>\n";
 
@@ -89,7 +86,6 @@
               $link = $result["link"];
 
               // We have found the link. So lets display it...
-              //$a_link = $link['link'];
               $record_counter++;
               echo "$record_counter.) <a href='" . $link . "'>" . $link . "</a>\n";
               
@@ -104,7 +100,6 @@
             if ($record_counter == 0) {
               echo "</br><h5>No results for search phrase '<b>" . $search . "</b>' found!</h5>";
             }
-              
 
           } else {
               echo "Oops, nothing found. => Enter a search phrase!</br>\n";

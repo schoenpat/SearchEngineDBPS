@@ -13,11 +13,10 @@ $cfg_limit_found_words = 100;
 $cfg_limit_found_links_per_words = 100;
 
 // Functions
-parse_str(implode('&', array_slice($argv, 1)), $_GET);
-//echo("CRAWLER\n");
-echo  $_GET['url'];
-echo  $_GET['mode'];
-
+if (isset($argv))
+{
+    parse_str(implode('&', array_slice($argv, 1)), $_GET);
+}
 
 // This is a mapper class to hold the SQL-Statements and does the DB and PDO stuff.
 class DBHandler
@@ -49,7 +48,7 @@ class DBHandler
         // query the links being connected to the word entry...
         $this->GET_WORD_LINKS = $this->db->prepare("SELECT * FROM wordlinks WHERE id_word = ?  LIMIT ?;"); // LIMITED NUMBER OF RESULTS
         $this->GET_LINK = $this->db->prepare("SELECT * FROM tbl_link WHERE id = ?;");
-        
+
         $this->GET_SEARCH_RESULT = $this->db->prepare("
                                                 SELECT tbl_link.link from tbl_link
                                                 join wordlinks wl on tbl_link.id = wl.id_link
@@ -106,12 +105,13 @@ class DBHandler
         return $this->GET_LINK->fetchAll();
     }
 
+
     public function get_search_result($searchphrase)
     {
         $this->GET_SEARCH_RESULT->execute(array(':needle' => '%'.$searchphrase.'%'));
         return $this->GET_SEARCH_RESULT->fetchAll();
     }
-
+  
     public function get_urls_to_index()
     {
         $this->GET_URLS_TO_INDEX->execute();
@@ -240,6 +240,7 @@ if ($_GET['mode'] == 'add')
 {
     insert_single_url($url, $db);
     crawl($db, $url, $cfg_recursion_depth);
+    echo "Indexed " . $url . " and related pages (if they were not indexed already).";
 }
 elseif ($_GET['mode'] == 'worker')
 {
