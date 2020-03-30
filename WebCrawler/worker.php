@@ -17,9 +17,6 @@ if (isset($argv))
 {
     parse_str(implode('&', array_slice($argv, 1)), $_GET);
 }
-//echo("CRAWLER\n");
-echo  $_GET['url'];
-echo  $_GET['mode'];
 
 
 // This is a mapper class to hold the SQL-Statements and does the DB and PDO stuff.
@@ -119,7 +116,6 @@ class DBHandler
     public function insert_url($url)
     {
         $this->INSERT_URL->bindParam(1, $url);
-        echo("URL was inserted into db!");
         return $this->INSERT_URL->execute();
     }
 }
@@ -231,6 +227,7 @@ if ($_GET['mode'] == 'add')
 {
     insert_single_url($url, $db);
     crawl($db, $url, $cfg_recursion_depth);
+    echo "Indexed " . $url . " and related pages (if they were not indexed already).";
 }
 elseif ($_GET['mode'] == 'worker')
 {
